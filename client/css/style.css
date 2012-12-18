@@ -1,0 +1,14 @@
+html, body{
+    margin:0;
+    padding:0;
+}
+@media only screen and (orientation : landscape){
+div.picoTools{
+    position:fixed;
+}
+}
+@media only screen and (orientation : portrait){
+div.picoTools{
+    position:fixed;
+}
+}
