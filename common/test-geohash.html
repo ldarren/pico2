@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>GeoHash Test</title>
+<style>
+input{
+display:block;
+}
+span{
+display:inline-block;
+background-color:#bcdcac;
+margin:10px;
+padding: 10px;
+}
+</style>
+<script src=./geohash.js></script>
+<script>
+
+function format(bitfield){
+    return bitfield.join(',')+'<br>'+stringify(bitfield)+'<br>';
+}
+
+function map(){
+    var
+    inputs = document.getElementsByTagName('input'),
+    output = document.getElementById('output'),
+    accuracy = parseInt(inputs[0].value),
+    range = parseInt(inputs[1].value),
+    lat = parseFloat(inputs[2].value),
+    lng = parseFloat(inputs[3].value),
+    bitfield = hash(lat, lng, accuracy),
+    mat = scale(range, [[bitfield]]),
+    vec;
+
+    output.innerHTML  = '[origin]'+format(bitfield);
+    
+    for(var y=0, yl=mat.length; y<yl; y++){
+        vec = mat[y];
+        for(var x=0,xl=vec.length; x<xl; x++){
+            output.innerHTML += '['+x+','+y+']'+format(vec[x]);
+        } 
+    }
+}
+</script>
+</head>
+<body>
+
+<form id=test3 method=GET>
+<h1>GeoHash Test</h1>
+<label>accuracy<input name=accuracy type=number min=1 value=16></input></label>
+<label>range<input name=range type=number min=0 value=1></input></label>
+<label>latittude<input name=latitude type=number min=-90 max=90 value=1.366667></input></label>
+<label>longitude<input name=longitude type=number min=-180 max=180 value=103.983330></input></label>
+<label id=test2><a id=test1 href="javascript:map()">search</a></label>
+</form>
+
+<span id=output></span>
+
+</body>
+</html>
