@@ -56,12 +56,14 @@ Box.prototype.handleEvent = function(evt){
                     layer.clear();
                     break;
                 case 'upload':
-                    localStorage.setItem('image', layer.save());
-                    console.log(layer.save());
+                    getGeoHash(function(err, geohash){
+                        localStorage.setItem(geohash, layer.save());
+                    });
                     break;
                 case 'download':
-                    layer.open(localStorage.getItem('image'));
-                    console.log('open', localStorage.getItem('image'));
+                    getGeoHash(function(err, geohash){
+                        layer.open(localStorage.getItem(geohash));
+                    });
                     break;
             }
             break;
