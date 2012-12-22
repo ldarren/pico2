@@ -32,22 +32,28 @@ Box.prototype.handleEvent = function(evt){
             switch(evt.srcElement.id){
                 case 'small pen':
                     layer.changeScale(1);
+                    layer.setMode(1);
+                    console.log('small pen');
                     break;
                 case 'medium pen':
                     layer.changeScale(2);
+                    layer.setMode(1);
                     break;
                 case 'large pen':
                     layer.changeScale(3);
-                    break;
+                    layer.setMode(1);
                     break;
                 case 'red':
                     layer.changeColor('#f00');
+                    layer.setMode(1);
                     break;
                 case 'green':
                     layer.changeColor('#0f0');
+                    layer.setMode(1);
                     break;
                 case 'blue':
                     layer.changeColor('#00f');
+                    layer.setMode(1);
                     break;
                 case 'eraser':
                     layer.toggleMode();
@@ -279,6 +285,10 @@ Layer.prototype.changeScale = function(scale){
 
 Layer.prototype.toggleMode = function(){
     this.mode ^= 1;
+};
+
+Layer.prototype.setMode = function(mode){
+    this.mode = mode;
 };
 
 Layer.prototype.clear = function(){

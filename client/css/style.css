@@ -12,3 +12,9 @@ div.picoTools{
     position:fixed;
 }
 }
+div.picoLog{
+    overflow: auto;
+}
+span{
+    display:block;
+}
