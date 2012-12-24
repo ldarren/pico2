@@ -6,6 +6,16 @@ LAYERS = {
     GRID: 2
 };
 
+function imgSaved(err, xhr){
+    console.log('image saved', err, xhr);
+}
+
+function imgLoaded(err, xhr, layer){
+    if (err) return console.error(err);
+    var ret = JSON.parse(xhr.responseText);
+    layer.open(decodeURIComponent(ret.img));
+}
+
 var
 boxes = [],
 Box = function(stage){
@@ -28,12 +38,14 @@ Box.prototype.handleEvent = function(evt){
     var target = evt.target;
     switch(evt.type){
         case 'click':
-            var layer = this.layers[LAYERS.FG];
-            switch(evt.srcElement.id){
+            var
+            srcId = evt.srcElement.id,
+            layer = this.layers[LAYERS.FG];
+
+            switch(srcId){
                 case 'small pen':
                     layer.changeScale(1);
                     layer.setMode(1);
-                    console.log('small pen');
                     break;
                 case 'medium pen':
                     layer.changeScale(2);
@@ -63,15 +75,23 @@ Box.prototype.handleEvent = function(evt){
                     break;
                 case 'upload':
                     getGeoHash(function(err, geohash){
-                        localStorage.setItem(geohash, layer.save());
+                        if (err) console.error(err);
+                        if (err || !geohash) geohash = getFastGeoHash();
+                        var img = encodeURIComponent(layer.save());
+                        localStorage.setItem(geohash, img);
+                        pico.ajax('post', 'http://107.20.154.29:1337/save', 'geohash='+geohash+'&img='+img, imgSaved, layer);
                     });
                     break;
                 case 'download':
                     getGeoHash(function(err, geohash){
-                        layer.open(localStorage.getItem(geohash));
+                        if (err) console.error(err);
+                        if (err || !geohash) geohash = getFastGeoHash();
+                        pico.ajax('post', 'http://107.20.154.29:1337/load', 'geohash='+geohash, imgLoaded, layer);
+                        //layer.open(localStorage.getItem(geohash));
                     });
                     break;
             }
+            console.log(srcId);
             break;
         case 'mousedown':
             this.mouseButton = evt.which;

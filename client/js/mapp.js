@@ -1,5 +1,7 @@
-var map, body, watchId,
-optionHi = {maximumAge:1000, timeout:30000, enableHighAccuracy:true},
+var
+watchId,
+geohash,
+optionHi = {maximumAge:1000, timeout:30000, enableHighAccuracy:false},
 optionLo = {maximumAge:1000, timeout:30000, enableHighAccuracy:false};
 
 function getPosition(pos){
@@ -8,7 +10,7 @@ function getPosition(pos){
     lon = pos.coords.longitude,
     geocode = stringify(hash(lat, lon, 16));
 
-    map.innerHTML = lat + ', ' + lon + ': '+ geocode;
+    console.log(lat + ', ' + lon + ': '+ geocode);
     return geocode;
 }
 
@@ -35,13 +37,13 @@ function getError(err){
             msg = 'Is time to upgrade urself';
             break;
     }
-    map.innerHTML = msg;
+    console.log(msg);
     return {code:code, msg:msg};
 }
 
 function getGeoHash(cb){
     if (navigator.geolocation){
-        map.innerHTML=("Checking location...");
+        console.log('Checking location...');
         navigator.geolocation.getCurrentPosition(
         function(pos){
             cb(null, getPosition(pos));
@@ -54,13 +56,17 @@ function getGeoHash(cb){
     }
 }
 
+function getFastGeoHash(){
+    return geohash;
+}
+
 function watchGeoHash(cb){
     if (navigator.geolocation){
         if (watchId) navigator.geolocation.clearPosition(watchId);
         watchId = navigator.geolocation.watchPosition(
         function(pos){
-            var hash = getPosition(pos);
-            if (cb) cb(null, hash);
+            geohash = getPosition(pos);
+            if (cb) cb(null, geohash);
         }, 
         function(err){
             var errObj = getError(err);
@@ -78,9 +84,6 @@ function clearGeoHash(){
 }
 
 function mapp(){
-    map =  document.createElement('div');
-    body = document.getElementsByTagName('body')[0];
-    body.appendChild(map);
     watchGeoHash();
 }
 
