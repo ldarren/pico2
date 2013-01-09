@@ -6,6 +6,10 @@ LAYERS = {
     GRID: 2
 };
 
+var
+headers = {};
+headers['Content-type'] = 'application/x-www-form-urlencoded';
+
 function imgSaved(err, xhr){
     console.log('image saved', err, xhr);
 }
@@ -79,14 +83,14 @@ Box.prototype.handleEvent = function(evt){
                         if (err || !geohash) geohash = getFastGeoHash();
                         var img = encodeURIComponent(layer.save());
                         localStorage.setItem(geohash, img);
-                        pico.ajax('post', 'http://107.20.154.29:1337/save', 'geohash='+geohash+'&img='+img, imgSaved, layer);
+                        pico.ajax('post', 'http://107.20.154.29:1337/save', 'geohash='+geohash+'&img='+img, headers, imgSaved, layer);
                     });
                     break;
                 case 'download':
                     getGeoHash(function(err, geohash){
                         if (err) console.error(err);
                         if (err || !geohash) geohash = getFastGeoHash();
-                        pico.ajax('post', 'http://107.20.154.29:1337/load', 'geohash='+geohash, imgLoaded, layer);
+                        pico.ajax('post', 'http://107.20.154.29:1337/load', 'geohash='+geohash, headers, imgLoaded, layer);
                         //layer.open(localStorage.getItem(geohash));
                     });
                     break;
